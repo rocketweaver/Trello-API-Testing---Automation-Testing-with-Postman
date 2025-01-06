@@ -1,0 +1,4798 @@
+{
+	"info": {
+		"_postman_id": "1faeaba5-9bbd-479c-a469-d7fc70d16998",
+		"name": "Trello API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10587287"
+	},
+	"item": [
+		{
+			"name": "Board",
+			"item": [
+				{
+					"name": "Create",
+					"item": [
+						{
+							"name": "Create Board",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"board_id\", responseData.id);\r",
+											"\r",
+											"pm.test(\"Board created successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains id, name, desc\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('id');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"    pm.expect(responseData).to.have.property('desc');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has correct name\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const boardName = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.name).to.eql(boardName);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/?name=New Board&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Board"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/?name=New Board&key=sadasdasd&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Board"
+										},
+										{
+											"key": "key",
+											"value": "sadasdasd"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/?name=New Board&key={{key}}&token=adasdsaasdadadsa",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Board"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "adasdsaasdadadsa"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Can't create board\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData.message).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/?name=&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"item": [
+						{
+							"name": "Update Board",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Board updated successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body has correct updated name and desc\", function () {\r",
+											"    const nameParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const boardName = decodeURIComponent(nameParam.value);\r",
+											"    \r",
+											"    pm.expect(responseData.name).to.eql(boardName);\r",
+											"\r",
+											"    const descParam = pm.request.url.query.find(param => param.key === 'desc');\r",
+											"    const boardDesc = decodeURIComponent(descParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.desc).to.eql(boardDesc);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?name=Updated Board&desc=This board is updated&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Board"
+										},
+										{
+											"key": "desc",
+											"value": "This board is updated"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?name=Updated Board&desc=This board is updated&key={asdasadasd&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Board"
+										},
+										{
+											"key": "desc",
+											"value": "This board is updated"
+										},
+										{
+											"key": "key",
+											"value": "{asdasadasd"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?name=Updated Board&desc=This board is updated&key={{key}}&token=sadasdasdasdasd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Board"
+										},
+										{
+											"key": "desc",
+											"value": "This board is updated"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "sadasdasdasdasd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Can't update board\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData.message).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?name=&desc=This board is updated&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "desc",
+											"value": "This board is updated"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update board\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/xixxxx?name=Update Board&desc=This board is updated&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"xixxxx"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Update Board"
+										},
+										{
+											"key": "desc",
+											"value": "This board is updated"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Read",
+					"item": [
+						{
+							"name": "Read Board",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Get board\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Board shows correct id\", function () {\r",
+											"    boardId = pm.globals.get(\"board_id\");\r",
+											"\r",
+											"    pm.expect(responseData.id).to.eql(boardId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains name and desc\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"    pm.expect(responseData).to.have.property('desc');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?key=asdasdasdadasd&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "asdasdasdadasd"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?key={{key}}&token=dasdadasdasdasd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "dasdadasdasdasd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get board\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/sadasdasd?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"sadasdasd"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Delete Board",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Board deleted successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body value as null\", function () {\r",
+											"    pm.expect(responseData.value).to.eql(null);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?key=sdadasasasdsdasd&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "sdadasasasdsdasd"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/{{board_id}}?key={{key}}&token=sadasdasdasdas",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"{{board_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "sadasdasdasdas"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete board\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/asdasdasdasd?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										"asdasdasdasd"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "List",
+			"item": [
+				{
+					"name": "Create",
+					"item": [
+						{
+							"name": "Create List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"list_id\", responseData.id);\r",
+											"\r",
+											"pm.test(\"List created successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains id, name, desc\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('id');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"    pm.expect(responseData).to.have.property('desc');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has correct name\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const listName = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.name).to.eql(listName);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has idBoard\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'idBoard');\r",
+											"    const idBoard = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.idBoard).to.eql(idBoard);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/?name=New List&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/?name=New List&idBoard={{board_id}}&key=asdadasad&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "asdadasad"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/?name=New List&idBoard={{board_id}}&key={{key}}&token=asdasdasdasd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "asdasdasdasd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Board Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid board id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid board id\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/?name=New List&idBoard={{random_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Deleted Board Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Only run when you after you delete the connected board\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has deleted board id error message\", function () {\r",
+											"    pm.expect(responseData).to.contains(\"unauthorized board list requested\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/?name=New List&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Can't create list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData.message).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/boards/?name=&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"boards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"item": [
+						{
+							"name": "Update List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"List updated successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body has correct updated name\", function () {\r",
+											"    const nameParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const listName = decodeURIComponent(nameParam.value);\r",
+											"    \r",
+											"    pm.expect(responseData.name).to.eql(listName);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?name=Updated List&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										},
+										{
+											"key": "closed",
+											"value": "true",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?name=Updated List&idBoard={{board_id}}&key=sadasdasdasd&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "sadasdasdasd"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?name=Updated List&idBoard={{board_id}}&key={{key}}&token=sadasdasdadasd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "sadasdasdadasd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?name=&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{random_id}}?name=Updated List&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Read",
+					"item": [
+						{
+							"name": "Read List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Get list\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"List shows correct id\", function () {\r",
+											"    listId = pm.globals.get(\"list_id\");\r",
+											"\r",
+											"    pm.expect(responseData.id).to.eql(listId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"List shows correct idBoard\", function () {\r",
+											"    boardId = pm.globals.get(\"board_id\");\r",
+											"\r",
+											"    pm.expect(responseData.idBoard).to.eql(boardId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains name\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key=sadasdasadsass&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "sadasdasadsass"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key={{key}}&token=dadsaasdadasd",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "dadsaasdadasd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{random_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Delete List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"List deleted successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body value as null\", function () {\r",
+											"    pm.expect(responseData.value).to.eql(null);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key=adasasadsd&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "adasasadsd"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete list\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key={{key}}&token=asdasdsad",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "asdasdsad"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{random_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Delete",
+					"item": [
+						{
+							"name": "Error Update Deleted List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has error update deleted list message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"model not found\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?name=Updated List&idBoard={{board_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "idBoard",
+											"value": "{{board_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										},
+										{
+											"key": "closed",
+											"value": "true",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Read Deleted List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get list detail\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has error read deleted list message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"model not found\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/lists/{{list_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"lists",
+										"{{list_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Card",
+			"item": [
+				{
+					"name": "Create",
+					"item": [
+						{
+							"name": "Create Card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"card_id\", responseData.id);\r",
+											"\r",
+											"pm.test(\"Card created successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains id, name, desc\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('id');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"    pm.expect(responseData).to.have.property('desc');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has correct name\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const listName = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.name).to.eql(listName);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has correct idList\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'idList');\r",
+											"    const idList = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.idList).to.eql(idList);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/?name=New Card&idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Card"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/?name=New Card&idList={{list_id}}&key=asdasdad&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Card"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "asdasdad"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/?name=New Card&idList={{list_id}}&key={{key}}&token=sadasasdas",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Card"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "sadasasdas"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Can't create board\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData.message).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/?name=&idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid List Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid list id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid value for idList\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/?name=New Card&idList={{random_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Card"
+										},
+										{
+											"key": "idList",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Deleted List Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Only run when you after you delete the connected board\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create card\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has deleted list id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"could not find the board that the card belongs to\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/?name=New Card&idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Card"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"item": [
+						{
+							"name": "Update Card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Card updated successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body has correct updated name and desc\", function () {\r",
+											"    const nameParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const cardName = decodeURIComponent(nameParam.value);\r",
+											"    \r",
+											"    pm.expect(responseData.name).to.eql(cardName);\r",
+											"    \r",
+											"    const descParam = pm.request.url.query.find(param => param.key === 'desc');\r",
+											"    const cardDesc = decodeURIComponent(descParam.value);\r",
+											"    \r",
+											"    pm.expect(responseData.desc).to.eql(cardDesc);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?name=Updated Card&desc=The card is updated&idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Card"
+										},
+										{
+											"key": "desc",
+											"value": "The card is updated"
+										},
+										{
+											"key": "closed",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?name=Updated Card&desc=The card is updated&idList={{list_id}}&key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Card"
+										},
+										{
+											"key": "desc",
+											"value": "The card is updated"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?name=Updated Card&desc=The card is updated&idList={{list_id}}&key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Card"
+										},
+										{
+											"key": "desc",
+											"value": "The card is updated"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update card\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?name=&desc=The card is updated&idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "desc",
+											"value": "The card is updated"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{random_id}}?name=Updated List&idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Read",
+					"item": [
+						{
+							"name": "Read List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Get card\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Card shows correct id\", function () {\r",
+											"    cardId = pm.globals.get(\"card_id\");\r",
+											"\r",
+											"    pm.expect(responseData.id).to.eql(cardId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"List shows correct idList\", function () {\r",
+											"    listId = pm.globals.get(\"list_id\");\r",
+											"\r",
+											"    pm.expect(responseData.idList).to.eql(listId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains name and desc\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"    pm.expect(responseData).to.have.property('desc');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?idList={{list_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?idList={{list_id}}&key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get card\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{random_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Delete Card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Card deleted successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body limits is empty\", function () {\r",
+											"    pm.expect(Object.keys(responseData.limits).length).to.eql(0);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete card\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{random_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Delete",
+					"item": [
+						{
+							"name": "Error Update Deleted List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't update card\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has error update deleted list message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"the requested resource was not found\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?name=Updated List&key={{key}}&token={{token}}&idList={{list_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										},
+										{
+											"key": "idList",
+											"value": "{{list_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Read Deleted List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get card detail\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has error read deleted card message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"The requested resource was not found.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Checklist",
+			"item": [
+				{
+					"name": "Create",
+					"item": [
+						{
+							"name": "Create Checklist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"checklist_id\", responseData.id);\r",
+											"\r",
+											"pm.test(\"Checklist created successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains id and name\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('id');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has correct name\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const listName = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.name).to.eql(listName);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body has correct idCard\", function () {\r",
+											"    const queryParam = pm.request.url.query.find(param => param.key === 'idCard');\r",
+											"    const idCard = decodeURIComponent(queryParam.value);\r",
+											"\r",
+											"    pm.expect(responseData.idCard).to.eql(idCard);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/?name=New Checklist&idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/?name=New Checklist&idCard={{card_id}}&key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/?name=New Checklist&idCard={{card_id}}&key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Can't create checklist\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData.message).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/?name=&idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Card Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create checklist\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid list id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid value for idCard\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/?name=New Checklist&idCard={{random_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Deleted Card Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Only run when you after you delete the connected board\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't create checklist\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has deleted list id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"unauthorized board requested\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/?name=New Checklist&idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										""
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "New Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"item": [
+						{
+							"name": "Update Card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Checklist updated successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body has correct updated name\", function () {\r",
+											"    const nameParam = pm.request.url.query.find(param => param.key === 'name');\r",
+											"    const cardName = decodeURIComponent(nameParam.value);\r",
+											"    \r",
+											"    pm.expect(responseData.name).to.eql(cardName);\r",
+											"    \r",
+											"    const descParam = pm.request.url.query.find(param => param.key === 'desc');\r",
+											"    const cardDesc = decodeURIComponent(descParam.value);\r",
+											"    \r",
+											"    pm.expect(responseData.desc).to.eql(cardDesc);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?key={{key}}&token={{token}}&name=Updated Checklist&idCard={{card_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "desc",
+											"value": "The card is updated",
+											"disabled": true
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										},
+										{
+											"key": "name",
+											"value": "Updated Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?name=Updated Card&idCard={{card_id}}&key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Card"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?name=Updated Card&idCard={{card_id}}&key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Card"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Empty Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update checklist\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has empty name error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid value for name\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?name=&idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": ""
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Can't update list\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{random_id}}?name=Updated Checklist&idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated Checklist"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Read",
+					"item": [
+						{
+							"name": "Read Checklist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Get checklist\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Checklist shows correct id\", function () {\r",
+											"    checklistId = pm.globals.get(\"checklist_id\");\r",
+											"\r",
+											"    pm.expect(responseData.id).to.eql(checklistId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Checklist shows correct idCard\", function () {\r",
+											"    cardId = pm.globals.get(\"card_id\");\r",
+											"\r",
+											"    pm.expect(responseData.idList).to.eql(cardId);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains name\", function () {\r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('name');\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get card\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?idCard={{card_id}}&key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?idCard={{card_id}}&key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get checklist\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{random_id}}?idCard={{card_id}}&key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Delete Card",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Checklist deleted successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Response body limits is empty\", function () {\r",
+											"    pm.expect(Object.keys(responseData.limits).length).to.eql(0);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid key error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid key\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?key={{random_id}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{random_id}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete checklist\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid token error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid app token\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?key={{key}}&token={{random_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{random_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Invalid Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't delete checklist\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has invalid id error message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"invalid id\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{random_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{random_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "After Delete",
+					"item": [
+						{
+							"name": "Error Update Deleted List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't update checklist\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has error update deleted list message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"the requested resource was not found\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?name=Updated List&key={{key}}&token={{token}}&idCard={{card_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Updated List"
+										},
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										},
+										{
+											"key": "idCard",
+											"value": "{{card_id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Error Read Deleted List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Can't get checklist detail\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"const responseData = pm.response.text();\r",
+											"\r",
+											"pm.test(\"Has error read deleted checklist message\", function () {\r",
+											"    pm.expect(responseData).to.eql(\"The requested resource was not found.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/checklists/{{checklist_id}}?key={{key}}&token={{token}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"checklists",
+										"{{checklist_id}}"
+									],
+									"query": [
+										{
+											"key": "key",
+											"value": "{{key}}"
+										},
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test(\"Reasonable run time\", function () {\r",
+					"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+					"});"
+				]
+			}
+		}
+	]
+}
