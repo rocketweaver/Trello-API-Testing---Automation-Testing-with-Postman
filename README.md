@@ -10,12 +10,6 @@ This project demonstrates API testing for the Trello API using Postman, focusing
 The detailed test documentation, including test scenarios and test cases, is available in a spreadsheet linked below.  
 You can also download the Postman collection for this API testing directly from this repository.
 
-## Features
-- **Manual and Automated Testing**: Comprehensive coverage of CRUD features.
-- **Validation**: Focused on testing response status codes, response bodies, and error handling.
-- **Documentation**: Test cases and execution results are maintained in a structured format.
-- **Downloadable Postman Collection**: A pre-configured Postman collection is included for easy setup.
-
 ## Test Cases Documentation
 Test cases are documented in the following spreadsheets:
 - [Test Cases](https://docs.google.com/spreadsheets/d/1QrU8VbiFehZksaSgL5OVHrAMt4DRKmH_j66UvpaotF4/edit?usp=sharing)
