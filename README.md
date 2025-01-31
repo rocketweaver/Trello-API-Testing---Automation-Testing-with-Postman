@@ -18,7 +18,8 @@ You can also download the Postman collection for this API testing directly from 
 
 ## Test Cases Documentation
 Test cases are documented in the following spreadsheet:
-[Google Sheets - Trello API Test Cases](https://docs.google.com/spreadsheets/d/1QrU8VbiFehZksaSgL5OVHrAMt4DRKmH_j66UvpaotF4/edit?gid=2011803251#gid=2011803251)
+- [Test Cases]([https://docs.google.com/spreadsheets/d/1QrU8VbiFehZksaSgL5OVHrAMt4DRKmH_j66UvpaotF4/edit?gid=2011803251#gid=2011803251](https://docs.google.com/spreadsheets/d/1u_82jXC5XygKT_yAUNReHP4_-YkMqR4C-NSGvxMScqc/edit?usp=sharing))
+- [Bug Report]([https://docs.google.com/spreadsheets/d/1QrU8VbiFehZksaSgL5OVHrAMt4DRKmH_j66UvpaotF4/edit?gid=2011803251#gid=2011803251](https://docs.google.com/spreadsheets/d/1u_82jXC5XygKT_yAUNReHP4_-YkMqR4C-NSGvxMScqc/edit?usp=sharing))
 
 ## How to Use
 1. Clone this repository.
